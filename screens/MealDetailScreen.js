@@ -1,28 +1,36 @@
 import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
 import { MEALS } from "../data/dummy-data";
-import { useLayoutEffect } from "react";
+import { useContext, useLayoutEffect } from "react";
 import MealShortDetails from "../components/MealShortDetails";
 import MealItemDetailList from "../components/MealItemDetailList";
 import IconButton from "../components/IconButton";
+import { FavoritesContext } from "./../store/context/favoritesContext";
 
 const MealDetailScreen = ({ route, navigation }) => {
   const { mealId, title } = route.params;
   const selectedMeal = MEALS.find((item) => item.id === mealId);
+  const {
+    ids: favMealIds,
+    addToFavorite,
+    removeFromFavorite,
+  } = useContext(FavoritesContext);
+  const isFavoriteMeal = favMealIds.includes(selectedMeal.id);
+  const onFavClickHandler = () =>
+    isFavoriteMeal ? removeFromFavorite(mealId) : addToFavorite(mealId);
 
-  const onFavClickHandler = () => console.log("Saved to Favorites!");
   useLayoutEffect(() => {
     navigation.setOptions({
       title,
       headerRight: () => (
         <IconButton
-          name="heart"
+          name= {isFavoriteMeal ? "heart" : "heart-outline"} 
           size={24}
-          color="white"
+          color={isFavoriteMeal ? "#e14343" : "white"}
           onPress={onFavClickHandler}
         />
       ),
     });
-  }, [title, navigation]);
+  }, [title, isFavoriteMeal, navigation]);
 
   return (
     <ScrollView bounces={false}>

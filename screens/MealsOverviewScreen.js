@@ -1,10 +1,10 @@
-import { FlatList, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { MEALS } from "../data/dummy-data";
-import MealItem from "../components/MealItem";
+import MealsOverviewList from "../components/MealsOverviewList";
 // import { useLayoutEffect } from "react";
 
-const MealsOverviewScreen = ({ route, navigation }) => {
-  const { categoryId, title } = route.params;
+const MealsOverviewScreen = ({ route }) => {
+  const { categoryId } = route.params;
   const filteredMeals = MEALS.filter((meals) =>
     meals.categoryIds.includes(categoryId)
   );
@@ -21,26 +21,9 @@ const MealsOverviewScreen = ({ route, navigation }) => {
   //   });
   // }, [title, navigation]);
 
-  const renderMealItem = ({ item }) => {
-    const pressHandler = () =>
-      navigation.navigate("MealDetail", { mealId: item.id, title: item.title });
-    const mealItemProps = {
-      title: item.title,
-      imgUrl: item.imageUrl,
-      affordability: item.affordability,
-      complexity: item.complexity,
-      duration: item.duration,
-      onPress: pressHandler,
-    };
-    return <MealItem {...mealItemProps} />;
-  };
   return (
     <View style={styles.screen}>
-      <FlatList
-        data={filteredMeals}
-        keyExtractor={(meal) => meal.id}
-        renderItem={renderMealItem}
-      />
+      <MealsOverviewList data={filteredMeals} />
     </View>
   );
 };
@@ -50,7 +33,6 @@ export default MealsOverviewScreen;
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    padding: 16,
-    paddingBottom: 100,
-  },
-});
+    paddingBottom: 80,
+  }
+})
