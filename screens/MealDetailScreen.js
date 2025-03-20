@@ -1,29 +1,40 @@
 import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
 import { MEALS } from "../data/dummy-data";
-import { useContext, useLayoutEffect } from "react";
+import {
+  //  useContext,
+  useLayoutEffect,
+} from "react";
 import MealShortDetails from "../components/MealShortDetails";
 import MealItemDetailList from "../components/MealItemDetailList";
 import IconButton from "../components/IconButton";
-import { FavoritesContext } from "./../store/context/favoritesContext";
+import { useDispatch, useSelector } from "react-redux";
+import { favoriteActions } from "../store/redux/favorite-slice";
+// import { FavoritesContext } from "./../store/context/favoritesContext";
 
 const MealDetailScreen = ({ route, navigation }) => {
   const { mealId, title } = route.params;
   const selectedMeal = MEALS.find((item) => item.id === mealId);
-  const {
-    ids: favMealIds,
-    addToFavorite,
-    removeFromFavorite,
-  } = useContext(FavoritesContext);
+  // const {
+  //   ids: favMealIds,
+  //   addToFavorite,
+  //   removeFromFavorite,
+  // } = useContext(FavoritesContext);
+  const dispatch = useDispatch();
+  const favMealIds = useSelector((state) => state.favoriteMeals.ids);
+  // const { addToFavorite, removeFromFavorite } = useA
   const isFavoriteMeal = favMealIds.includes(selectedMeal.id);
   const onFavClickHandler = () =>
-    isFavoriteMeal ? removeFromFavorite(mealId) : addToFavorite(mealId);
+    isFavoriteMeal
+      ? dispatch(favoriteActions.removeFromFavorite({id: mealId}))
+      : dispatch(favoriteActions.addToFavorite({id: mealId}));
+  // isFavoriteMeal ? removeFromFavorite(mealId) : addToFavorite(mealId);
 
   useLayoutEffect(() => {
     navigation.setOptions({
       title,
       headerRight: () => (
         <IconButton
-          name= {isFavoriteMeal ? "heart" : "heart-outline"} 
+          name={isFavoriteMeal ? "heart" : "heart-outline"}
           size={24}
           color={isFavoriteMeal ? "#e14343" : "white"}
           onPress={onFavClickHandler}

@@ -3,19 +3,22 @@ import MealsOverviewList from "./../components/MealsOverviewList";
 import { FavoritesContext } from "./../store/context/favoritesContext";
 import { MEALS } from "../data/dummy-data";
 import { StyleSheet, Text, View } from "react-native";
+import { useSelector } from "react-redux";
 
 const NoFavorite = () => {
   return (
     <View style={styles.screen}>
       <Text style={styles.title}>No Favorites Here!</Text>
-      <Text style={styles.desc}>You haven't favorited any meals yet. Take a look
-        at the meals and click on the heart to save them.
+      <Text style={styles.desc}>
+        You haven't favorited any meals yet. Take a look at the meals and click
+        on the heart to save them.
       </Text>
     </View>
   );
 };
 const FavoritesScreen = () => {
-  const { ids: favIds } = useContext(FavoritesContext);
+  // const { ids: favIds } = useContext(FavoritesContext);
+  const favIds = useSelector((state) => state.favoriteMeals.ids);
   const favMeals = MEALS.filter((meal) => favIds.includes(meal.id));
   return favMeals.length ? (
     <MealsOverviewList data={favMeals} />
@@ -42,5 +45,5 @@ const styles = StyleSheet.create({
     textAlign: "center",
     letterSpacing: 1.1,
     marginHorizontal: 48,
-  }
-})
+  },
+});
